@@ -56,7 +56,7 @@ app.post('/orders', validarToken, async (req, res) => {
         await pool.query(query, values);
         res.status(201).json({ status: "OK", message: "Pedido sincronizado correctamente" }); 
     } catch (err) {
-        console.error(err);
+        console.error("ERROR EN POSTGRES:", err.message);
         res.status(500).json({ status: "Error", message: err.message }); 
     }
 });
