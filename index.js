@@ -21,7 +21,7 @@ const MOCK_TOKEN = "token_secreto_12345";
 // 1. ENDPOINT DE AUTENTICACIÓN [cite: 25, 27]
 app.post('/auth/login', (req, res) => {
     const { username, password } = req.body;
-    
+    console.log("Datos recibidos:", req.body);
     // Validación simple para la tarea
     if (username === "admin" && password === "1234") {
        const token = jwt.sign({ user: username }, SECRET_KEY, { expiresIn: '8h' });
@@ -44,6 +44,7 @@ const validarToken = (req, res, next) => {
         req.user = decoded;
         next();
     });
+    console.log("token: ", token)
 };
 
 // 3. RECIBIR PEDIDOS Y GUARDAR EN POSTGRES
