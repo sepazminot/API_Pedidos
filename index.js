@@ -49,6 +49,7 @@ const validarToken = (req, res, next) => {
 // 3. RECIBIR PEDIDOS Y GUARDAR EN POSTGRES
 app.post('/orders', validarToken, async (req, res) => {
     const p = req.body;
+    console.log("Datos recibidos del celular:", p);
     try {
         const query = 'INSERT INTO pedidos (nombre, telefono, direccion, detalle, tipo_pago, foto_url, latitud, longitud, fecha_creacion) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)';
         const values = [p.cliente, p.telefono, p.direccion, p.detalle, p.tipo_pago, p.foto, p.latitud, p.longitud, p.fecha];
