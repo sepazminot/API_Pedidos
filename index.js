@@ -7,11 +7,10 @@ const SECRET_KEY = "SEPT"; // Usa esto para firmar los JWT
 
 // Configuración de Conexión a Postgres
 const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'pedidos',
-  password: '1234',
-  port: 5432,
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+        rejectUnauthorized: false
+    }
 });
 
 app.use(express.json());
@@ -51,12 +50,13 @@ const validarToken = (req, res, next) => {
 app.post('/orders', validarToken, async (req, res) => {
     const p = req.body;
     try {
-        const query = 'INSERT INTO pedidos (nombre, telefono, direccion, detalle, tipo_pago, latitud, longitud) VALUES ($1, $2, $3, $4, $5, $6, $7)';
-        const values = [p.nombre, p.telefono, p.direccion, p.detalle, p.tipo_pago, p.latitud, p.longitud];
+        const query = 'INSERT INTO pedidos (nombre, telefono, direccion, detalle, tipo_pago, foto_url, latitud, longitud, fecha_creacion) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)';
+        const values = [p.cliente, p.telefono, p.direccion, p.detalle, p.tipo_pago, p.foto, p.latitud, p.longitud, p.fecha];
         
         await pool.query(query, values);
-        res.status(201).json({ status: "OK", message: "Pedido guardado en Postgres" }); 
+        res.status(201).json({ status: "OK", message: "Pedido sincronizado correctamente" }); 
     } catch (err) {
+        console.error(err);
         res.status(500).json({ status: "Error", message: err.message }); 
     }
 });
@@ -65,4 +65,5 @@ app.get('/', (req, res) => {
     res.send('API de Pedidos con nodemon');
 });
 
-app.listen(3000, () => console.log('Servidor corriendo en el puerto 3000'));
+const port = process.env.PORT || 3000;
+app.listen(port, () => console.log(`Servidor en puerto ${port}`));
